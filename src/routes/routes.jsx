@@ -3,7 +3,7 @@ import Sales from '../pages/sales.jsx';
 import Inventory from '../pages/inventory.jsx';
 import Products from '../pages/products.jsx';
 import More from "../pages/more.jsx";
-
+import Cart from "../components/cart.jsx";
 
 const RoutesComponent = () => {
   
@@ -29,7 +29,9 @@ const RoutesComponent = () => {
              element={<More />}
              />
         
-          
+            <Route path="/cart" 
+             element={<Cart />}
+             />
         
        
        </Routes>

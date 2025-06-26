@@ -1,8 +1,13 @@
 // src/components/SalesPage.jsx
 import React, { useState, useEffect } from "react";
 import "../styles/sales.css";
+import { useNavigate } from "react-router-dom";
 
 function SalesPage() {
+  
+  const navigate = useNavigate();
+  
+  
   const [salesData, setSalesData] = useState({
     todaySales: 0,
     avgTicket: 0,
@@ -32,6 +37,7 @@ function SalesPage() {
 
   return (
     <div className="pos-container">
+     
       <div className="dashboard-section">
         <h2 className="section-title">Sales Dashboard</h2>
         
@@ -76,7 +82,7 @@ function SalesPage() {
         <div className="sale-action-section">
           <button 
             className="sale-button"
-            onClick={handleNewSale}
+            onClick={() => navigate("/cart")}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
               <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
