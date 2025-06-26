@@ -1,0 +1,59 @@
+.BottomNavBarWrapper {
+  background: #ffffff;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px 0 8px;
+  border-top: 1px solid #eee;
+  z-index: 100;
+}
+
+.NavSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.IconWrapper {
+  display: grid;
+  place-items: center;
+  padding: 8px;
+}
+
+.Icon {
+  width: 22px;
+  height: 22px;
+  color: #888;
+  transition: all 0.2s ease;
+}
+
+.NavSection p {
+  font-size: 11px;
+  font-weight: 500;
+  color: #888;
+}
+
+/* Active State */
+.NavSection.active::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  width: 32px;
+  height: 3px;
+  background: #3a86ff;
+  border-radius: 2px;
+}
+
+.NavSection.active .Icon {
+  color: #3a86ff;
+  transform: translateY(-4px);
+}
+
+.NavSection.active p {
+  color: #3a86ff;
+  font-weight: 600;
+}
