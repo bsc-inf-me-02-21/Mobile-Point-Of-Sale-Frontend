@@ -25,7 +25,7 @@ const RoutesComponent = () => {
              element={<Inventory />}
              />
         
-          <Route path="/more-options" 
+          <Route path="/more" 
              element={<More />}
              />
         

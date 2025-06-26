@@ -1,4 +1,6 @@
 import BottomNavBar from "../components/bottom-navbar.jsx";
+import Products from "../pages/products.jsx";
+
 
 const ParentPage = () => {
   
@@ -8,6 +10,7 @@ const ParentPage = () => {
     <div className='ParentPage'>
     
     <BottomNavBar />
+
     
     </div>
     
