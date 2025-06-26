@@ -1,3 +1,4 @@
+
 /*
 export const ProductCategories = [
   { id: 1, category: "Food & Groceries" },
@@ -6,51 +7,51 @@ export const ProductCategories = [
   { id: 4, category: "Personal Care" },
   { id: 5, category: "Other/Miscellaneous" }
 ];
-
-
 */
+
+
 
 // src/data/products-data.jsx
 const Products = [
   {
     id: 1,
     name: "Coca-Cola",
-    price: 1.99,
+    price: 999.99,
     category: "Beverages",
     image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
   },
   {
     id: 2,
     name: "Lays Chips",
-    price: 2.49,
+    price: 3000.00,
     category: "Snacks",
     image: "https://images.unsplash.com/photo-1621447504864-d8686e12698c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
   },
   {
     id: 3,
     name: "Whole Milk",
-    price: 3.29,
+    price: 6000,
     category: "Dairy",
     image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
   },
   {
     id: 4,
     name: "Mineral Water",
-    price: 1.29,
+    price: 2000,
     category: "Beverages",
     image: "https://images.unsplash.com/photo-1544003484-3cd181d17917?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
   },
   {
     id: 5,
     name: "Chocolate Bar",
-    price: 1.79,
+    price: 12000,
     category: "Snacks",
     image: "https://images.unsplash.com/photo-1575377427642-087cf684f29d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
   },
   {
     id: 6,
     name: "Greek Yogurt",
-    price: 2.99,
+    price: 8000,
     category: "Dairy",
     image: "https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
   },
