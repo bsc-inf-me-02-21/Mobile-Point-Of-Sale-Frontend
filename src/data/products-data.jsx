@@ -1,5 +1,5 @@
-
-export const Product Categories = [
+/*
+export const ProductCategories = [
   { id: 1, category: "Food & Groceries" },
   { id: 2, category: "Beverages" },
   { id: 3, category: "Household & General Merchandise" },
@@ -8,11 +8,12 @@ export const Product Categories = [
 ];
 
 
+*/
 
 
 
 
-export const Products = [
+ const Products = [
   {
     id: 1,
     name: "Coca-Cola (300ml)",
@@ -535,3 +536,4 @@ export const Products = [
   }
 ];
 
+export default Products;
