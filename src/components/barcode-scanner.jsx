@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import "../styles/barcode-scanner.css";
 
@@ -8,53 +8,57 @@ const BarcodeScanner = ({
   isScanning
 }) => {
   const scannerRef = useRef(null);
+  const [isCameraReady, setIsCameraReady] = useState(false);
+  const containerRef = useRef(null);
+  
+  // Create a stable reference to callbacks
   const callbacksRef = useRef({ onScanSuccess, onScanFailure });
-
-  // Update callbacks on every render
   useEffect(() => {
     callbacksRef.current = { onScanSuccess, onScanFailure };
-  });
+  }, [onScanSuccess, onScanFailure]);
 
-  // Handle scanning lifecycle
   useEffect(() => {
-    if (!isScanning) return;
+    if (!isScanning || !containerRef.current) return;
     
-    const initScanner = () => {
-      // Clean up any existing scanner first
-      if (scannerRef.current) {
-        scannerRef.current.clear().catch(console.error);
-      }
-
-      // Initialize new scanner with supported barcode formats
-      const scanner = new Html5QrcodeScanner(
-        "scanner-container",
+    // Initialize scanner only once
+    if (!scannerRef.current) {
+      const containerId = `scanner-container-${Date.now()}`;
+      containerRef.current.id = containerId;
+      
+      scannerRef.current = new Html5QrcodeScanner(
+        containerId,
         {
           qrbox: { width: 250, height: 150 },
           fps: 10,
-          // Specify supported barcode formats explicitly
           qrCodeDecoder: {
-            readers: [
-              "ean_reader",         // EAN/UPC
-              "code_128_reader",    // Code 128
-              "upc_reader",         // UPC
-              "qr_code_reader"      // QR Codes
-            ]
+            readers: ["ean_reader", "code_128_reader", "upc_reader", "qr_code_reader"]
           }
         },
         false
       );
-
-      scanner.render(
+      
+      scannerRef.current.render(
         decodedText => callbacksRef.current.onScanSuccess(decodedText),
-        error => callbacksRef.current.onScanFailure?.(error)
+        error => {
+          // Ignore common non-critical errors
+          if (!error.includes("NotFoundException") && 
+              !error.includes("NoMultiFormatReader")) {
+            callbacksRef.current.onScanFailure?.(error);
+          }
+        }
       );
       
-      scannerRef.current = scanner;
-    };
-
-    initScanner();
-
-    // Cleanup on unmount or when scanning stops
+      // Set a timeout to detect if camera fails to start
+      const cameraTimeout = setTimeout(() => {
+        if (!isCameraReady) {
+          callbacksRef.current.onScanFailure?.("Camera initialization timed out");
+        }
+      }, 5000);
+      
+      return () => clearTimeout(cameraTimeout);
+    }
+    
+    // Cleanup when component unmounts or scanning stops
     return () => {
       if (scannerRef.current) {
         scannerRef.current.clear().catch(error => {
@@ -68,11 +72,10 @@ const BarcodeScanner = ({
   }, [isScanning]);
 
   return (
-    <div className="scanner-viewport">
+    <div className="scanner-viewport" ref={containerRef}>
       {isScanning && (
         <div className="scanner-active">
-          <div id="scanner-container" className="scanner-element"></div>
-          
+          <div className="scanner-element"></div>
           <div className="scanner-overlay">
             <div className="scanner-frame">
               <div className="laser"></div>

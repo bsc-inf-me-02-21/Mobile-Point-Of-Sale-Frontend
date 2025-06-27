@@ -15,7 +15,7 @@ export const ProductCategories = [
   const Products = [
   // Original products with Unsplash images
   { id: "123456789", name: "Coca-Cola 500ml", price: 2.50, category: "Beverages", image: `${Coca}`},
-  { id: "234567890", name: "Lays Potato Chips", price: 1.75, category: "Snacks", image: "https://source.unsplash.com/random/?potato,chips&sig=234567890" },
+  { id: "6005165000890", name: "Special brew 330ml", price: 1.75, category: "Snacks", image: "https://source.unsplash.com/random/?potato,chips&sig=234567890" },
   { id: "345678901", name: "Whole Milk 1L", price: 3.25, category: "Dairy", image: "https://source.unsplash.com/random/?milk,bottle&sig=345678901" },
   { id: "456789012", name: "Mineral Water", price: 1.25, category: "Beverages", image: "https://source.unsplash.com/random/?mineral,water&sig=456789012" },
   { id: "567890123", name: "Chocolate Bar", price: 2.00, category: "Snacks", image: "https://source.unsplash.com/random/?chocolate,bar&sig=567890123" },

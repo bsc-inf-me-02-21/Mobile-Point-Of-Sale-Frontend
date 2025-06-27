@@ -14,8 +14,9 @@ const Cart = () => {
   const [amountPaid, setAmountPaid] = useState("");
   const [paymentError, setPaymentError] = useState("");
   const navigate = useNavigate();
-  const { productsData } = useContext(ProductsContext);
+  
   const { addTransaction } = useTransactions();
+  const { productsData, loading: productsLoading } = useContext(ProductsContext); 
   
   const { 
     cartItems, 
