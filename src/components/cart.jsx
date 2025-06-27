@@ -172,9 +172,7 @@ const Cart = () => {
               <div className="cart-items">
                 {cartItems.map(item => (
                   <div key={item.id} className="cart-item">
-                    <div className="item-image">
-                      <div className="image-placeholder" style={{ backgroundImage: `url(${item.image})` }}></div>
-                    </div>
+
                     <div className="item-info">
                       <h4>{item.name}</h4>
                       <p className="item-category">{item.category}</p>
