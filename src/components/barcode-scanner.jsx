@@ -1,4 +1,3 @@
-// src/components/BarcodeScanner.jsx
 import React, { useEffect, useRef } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import "../styles/barcode-scanner.css";
@@ -6,60 +5,71 @@ import "../styles/barcode-scanner.css";
 const BarcodeScanner = ({ 
   onScanSuccess, 
   onScanFailure, 
-  isScanning,
-  onStopScanning
+  isScanning
 }) => {
   const scannerRef = useRef(null);
-  
-  // Initialize the scanner
-  const initScanner = () => {
-    if (!scannerRef.current) {
-      scannerRef.current = new Html5QrcodeScanner(
+  const callbacksRef = useRef({ onScanSuccess, onScanFailure });
+
+  // Update callbacks on every render
+  useEffect(() => {
+    callbacksRef.current = { onScanSuccess, onScanFailure };
+  });
+
+  // Handle scanning lifecycle
+  useEffect(() => {
+    if (!isScanning) return;
+    
+    const initScanner = () => {
+      // Clean up any existing scanner first
+      if (scannerRef.current) {
+        scannerRef.current.clear().catch(console.error);
+      }
+
+      // Initialize new scanner with supported barcode formats
+      const scanner = new Html5QrcodeScanner(
         "scanner-container",
         {
           qrbox: { width: 250, height: 150 },
           fps: 10,
+          // Specify supported barcode formats explicitly
+          qrCodeDecoder: {
+            readers: [
+              "ean_reader",         // EAN/UPC
+              "code_128_reader",    // Code 128
+              "upc_reader",         // UPC
+              "qr_code_reader"      // QR Codes
+            ]
+          }
         },
         false
       );
-      
-      scannerRef.current.render(
-        (decodedText) => onScanSuccess(decodedText),
-        (errorMessage) => {
-          if (onScanFailure) onScanFailure(errorMessage);
-        }
+
+      scanner.render(
+        decodedText => callbacksRef.current.onScanSuccess(decodedText),
+        error => callbacksRef.current.onScanFailure?.(error)
       );
-    }
-  };
+      
+      scannerRef.current = scanner;
+    };
 
-  // Stop scanning
-  const stopScanning = () => {
-    if (scannerRef.current) {
-      scannerRef.current.clear().catch(error => {
-        console.error("Failed to clear scanner", error);
-      });
-      scannerRef.current = null;
-    }
-  };
+    initScanner();
 
-  // Handle scanning state changes
-  useEffect(() => {
-    if (isScanning) {
-      initScanner();
-    } else {
-      stopScanning();
-    }
-    
+    // Cleanup on unmount or when scanning stops
     return () => {
       if (scannerRef.current) {
-        scannerRef.current.clear().catch(console.error);
+        scannerRef.current.clear().catch(error => {
+          if (!error.message.includes("NotFoundException")) {
+            console.error("Scanner cleanup error:", error);
+          }
+        });
+        scannerRef.current = null;
       }
     };
   }, [isScanning]);
 
   return (
     <div className="scanner-viewport">
-      {isScanning ? (
+      {isScanning && (
         <div className="scanner-active">
           <div id="scanner-container" className="scanner-element"></div>
           
@@ -73,7 +83,7 @@ const BarcodeScanner = ({
             </div>
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 };

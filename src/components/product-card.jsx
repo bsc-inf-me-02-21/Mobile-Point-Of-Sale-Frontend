@@ -4,6 +4,8 @@ import { ProductsContext } from "../context/products-context.jsx";
 import { useCart } from "../context/cart-context.jsx";
 import "../styles/product-card.css";
 
+
+
 function ProductCard() {
   const productData = useContext(ProductsContext);
   const { addToCart } = useCart();
@@ -33,7 +35,7 @@ function ProductCard() {
           placeholder="Search products..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
+         className="search-input"
         />
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
