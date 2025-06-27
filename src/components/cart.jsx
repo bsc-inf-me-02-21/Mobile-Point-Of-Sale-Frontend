@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Html5QrcodeScanner } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
 import "../styles/cart.css";
 
 const Cart = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [scanError, setScanError] = useState("");
+  const [cameraPermission, setCameraPermission] = useState(null);
   const navigate = useNavigate();
+  const scannerRef = useRef(null);
   
   // Sample products database
   const products = [
@@ -22,18 +26,69 @@ const Cart = () => {
   // Calculate cart total
   const cartTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   
-  // Simulate barcode scanning
+  // Initialize the scanner
+  const initScanner = () => {
+    if (!scannerRef.current) {
+      scannerRef.current = new Html5QrcodeScanner(
+        "scanner-container",
+        {
+          qrbox: { width: 250, height: 150 },
+          fps: 10,
+        },
+        false
+      );
+      
+      scannerRef.current.render(
+        (decodedText) => onScanSuccess(decodedText),
+        (errorMessage) => onScanFailure(errorMessage)
+      );
+    }
+  };
+  
+  // Handle successful scan
+  const onScanSuccess = (decodedText) => {
+    // Find product by ID
+    const product = products.find(p => p.id === decodedText);
+    
+    if (product) {
+      addToCart(product);
+      setScanError("");
+      setCameraPermission("granted");
+    } else {
+      setScanError(`Product not found: ${decodedText}`);
+    }
+  };
+  
+  // Handle scan errors
+  const onScanFailure = (errorMessage) => {
+    // Handle permission errors
+    if (errorMessage.includes("NotAllowedError") || 
+        errorMessage.includes("Permission denied")) {
+      setCameraPermission("denied");
+    }
+    
+    if (!errorMessage.includes("NotFoundException") && 
+        !errorMessage.includes("NoMultiFormatReader")) {
+      console.warn(`QR error = ${errorMessage}`);
+    }
+  };
+  
+  // Start scanning
   const startScanning = () => {
     setIsScanning(true);
-    
-    // Simulate scanning process
-    setTimeout(() => {
-      setIsScanning(false);
-      
-      // Generate a random barcode from products
-      const randomProduct = products[Math.floor(Math.random() * products.length)];
-      addToCart(randomProduct);
-    }, 1500);
+    setScanError("");
+    setCameraPermission("pending");
+  };
+  
+  // Stop scanning
+  const stopScanning = () => {
+    if (scannerRef.current) {
+      scannerRef.current.clear().catch(error => {
+        console.error("Failed to clear scanner", error);
+      });
+    }
+    setIsScanning(false);
+    setCameraPermission(null);
   };
   
   // Add product to cart
@@ -51,6 +106,9 @@ const Cart = () => {
       
       return [...prevItems, {...product, quantity: 1}];
     });
+    
+    // Stop scanning after successful scan
+    stopScanning();
   };
   
   // Remove item from cart
@@ -69,50 +127,105 @@ const Cart = () => {
     setCartItems([]);
   };
 
+  // Initialize scanner when scanning state changes
+  useEffect(() => {
+    if (isScanning) {
+      initScanner();
+    } else if (scannerRef.current) {
+      scannerRef.current.clear().catch(error => {
+        console.error("Failed to clear scanner", error);
+      });
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      if (scannerRef.current) {
+        scannerRef.current.clear().catch(error => {
+          console.error("Failed to clear scanner on unmount", error);
+        });
+      }
+    };
+  }, [isScanning]);
+
   return (
     <div className="CartWrapper">
       <div className="scanner-container">
         <h2 className="scanner-title">Scan Products</h2>
         
         <div className="scanner-viewport">
-          <div className={`scanner-overlay ${isScanning ? 'scanning' : ''}`}>
-            <div className="scanner-frame">
-              <div className="laser"></div>
+          {isScanning ? (
+            <div className="scanner-active">
+              {/* Scanner container must be directly accessible for permission prompt */}
+              <div id="scanner-container" className="scanner-element"></div>
               
-              {isScanning ? (
-                <div className="scanning-indicator">
+              {/* Overlay only shown after permission is granted */}
+              {cameraPermission === "granted" && (
+                <div className="scanner-overlay">
+                  <div className="scanner-frame">
+                    <div className="laser"></div>
+                    <div className="scanning-indicator">
+                      <div className="spinner"></div>
+                      <p>Scanning barcode...</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Permission prompt status */}
+              {cameraPermission === "pending" && (
+                <div className="permission-prompt">
                   <div className="spinner"></div>
-                  <p>Scanning barcode...</p>
+                  <p>Please allow camera access in your browser...</p>
                 </div>
-              ) : cartItems.length > 0 ? (
-                <div className="scan-success">
+              )}
+              
+              {cameraPermission === "denied" && (
+                <div className="permission-denied">
                   <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
-                    <path fill="#28a745" d="m10 13.6l5.9-5.9q.275-.275.7-.275t.7.275q.275.275.275.7t-.275.7l-6.6 6.6q-.3.3-.7.3t-.7-.3l-2.6-2.6q-.275-.275-.275-.7t.275-.7q.275-.275.7-.275t.7.275l1.9 1.9Z"/>
+                    <path fill="#dc3545" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                   </svg>
-                  <p>Product added to cart!</p>
-                </div>
-              ) : (
-                <div className="scan-placeholder">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
-                    <path fill="var(--gray)" d="M2 6h4v12H2V6m5 0h4v12H7V6m5 0h4v12h-4V6m5 0h4v12h-4V6Z"/>
-                  </svg>
-                  <p>Position barcode inside frame</p>
+                  <p>Camera access denied. Please check your browser permissions.</p>
+                  <button onClick={stopScanning}>Cancel Scanning</button>
                 </div>
               )}
             </div>
-          </div>
+          ) : cartItems.length > 0 ? (
+            <div className="scan-success">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+                <path fill="#28a745" d="m10 13.6l5.9-5.9q.275-.275.7-.275t.7.275q.275.275.275.7t-.275.7l-6.6 6.6q-.3.3-.7.3t-.7-.3l-2.6-2.6q-.275-.275-.275-.7t.275-.7q.275-.275.7-.275t.7.275l1.9 1.9Z"/>
+              </svg>
+              <p>Product added to cart!</p>
+            </div>
+          ) : (
+            <div className="scan-placeholder">
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
+                <path fill="var(--gray)" d="M2 6h4v12H2V6m5 0h4v12H7V6m5 0h4v12h-4V6m5 0h4v12h-4V6Z"/>
+              </svg>
+              <p>Position barcode inside frame</p>
+            </div>
+          )}
         </div>
+        
+        {scanError && (
+          <div className="scan-error">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+              <path fill="#dc3545" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+            {scanError}
+          </div>
+        )}
         
         <div className="scan-controls">
           <button 
-            className="scan-btn"
-            onClick={startScanning}
-            disabled={isScanning}
+            className={`scan-btn ${isScanning ? 'scanning-active' : ''}`}
+            onClick={isScanning ? stopScanning : startScanning}
           >
             {isScanning ? (
               <>
-                <span className="spinner"></span>
-                Scanning...
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+                Stop Scanning
               </>
             ) : (
               <>
