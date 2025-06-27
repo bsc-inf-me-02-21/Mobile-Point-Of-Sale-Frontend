@@ -1,11 +1,13 @@
 // src/components/ProductCard.jsx
-import { useState } from "react";
+import { useState, useContext } from "react";
+import {ProductsContext} from "../context/products-context.jsx";
 import Products from "../data/products-data.jsx";
 import "../styles/product-card.css";
 import Coca from "../images/coca.jpg";
 
 function ProductCard() {
-  const [productData] = useState(Products);
+  const productData = useContext(ProductsContext);
+
   const [cart, setCart] = useState([]);
   
   const addToCart = (product) => {
