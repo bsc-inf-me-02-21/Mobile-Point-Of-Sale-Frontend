@@ -1,20 +1,21 @@
 // src/components/ProductCard.jsx
 import { useState, useContext } from "react";
 import {ProductsContext} from "../context/products-context.jsx";
+import {useCart} from "../context/cart-context.jsx";
 import Products from "../data/products-data.jsx";
 import "../styles/product-card.css";
 import Coca from "../images/coca.jpg";
 
+
 function ProductCard() {
   const productData = useContext(ProductsContext);
 
-  const [cart, setCart] = useState([]);
-  
-  const addToCart = (product) => {
-    setCart(prevCart => [...prevCart, product]);
-    console.log(`Added ${product.name} to cart`);
-  };
 
+  
+  const {cart, addToCart} = useCart();
+  
+  
+  
   return (
     <div className="pos-container">
    
@@ -30,14 +31,6 @@ function ProductCard() {
         {productData.map((product) => (
           <div className="product-card" key={product.id}>
             <div className="product-image-container">
-              {/*
-              <img 
-                src={product.image} 
-                alt={product.name} 
-                className="product-image"
-              />
-        */}
-
                    <img 
                     src={product.image} 
                 alt={product.name} 
