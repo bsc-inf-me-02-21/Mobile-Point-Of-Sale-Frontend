@@ -1,38 +1,44 @@
 // src/components/ProductCard.jsx
 import { useState, useContext } from "react";
-import {ProductsContext} from "../context/products-context.jsx";
-import {useCart} from "../context/cart-context.jsx";
-import Products from "../data/products-data.jsx";
+import { ProductsContext } from "../context/products-context.jsx";
+import { useCart } from "../context/cart-context.jsx";
 import "../styles/product-card.css";
-import Coca from "../images/coca.jpg";
-
 
 function ProductCard() {
   const productData = useContext(ProductsContext);
+  const { addToCart } = useCart();
+  
+  // State for active category
+  const [activeCategory, setActiveCategory] = useState("All");
+  
+  // Filter products based on active category
+  const filteredProducts = activeCategory === "All" 
+    ? productData 
+    : productData.filter(product => product.category === activeCategory);
+  
+  // Categories for tabs
+  const categories = ["All", "Beverages", "Snacks", "Dairy"];
 
-
-  
-  const {cart, addToCart} = useCart();
-  
-  
-  
   return (
     <div className="pos-container">
-   
-      
       <div className="category-tabs">
-        <button className="active">All Products</button>
-        <button>Beverages</button>
-        <button>Snacks</button>
-        <button>Dairy</button>
+        {categories.map(category => (
+          <button
+            key={category}
+            className={activeCategory === category ? "active" : ""}
+            onClick={() => setActiveCategory(category)}
+          >
+            {category}
+          </button>
+        ))}
       </div>
       
       <div className="card-container">
-        {productData.map((product) => (
+        {filteredProducts.map((product) => (
           <div className="product-card" key={product.id}>
             <div className="product-image-container">
-                   <img 
-                    src={product.image} 
+              <img 
+                src={product.image} 
                 alt={product.name} 
                 className="product-image"
               />

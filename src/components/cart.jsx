@@ -1,14 +1,17 @@
 // src/components/Cart.jsx
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import BarcodeScanner from "../components/barcode-scanner.jsx";
 import { useCart } from "../context/cart-context.jsx";
 import "../styles/cart.css";
+import {ProductsContext} from "../context/products-context.jsx";
+
 
 const Cart = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [scanError, setScanError] = useState("");
   const navigate = useNavigate();
+  const {productsData} = useContext(ProductsContext);
   
   // Use cart context functions
   const { 
@@ -19,24 +22,14 @@ const Cart = () => {
     updateQuantity
   } = useCart();
   
-  // Sample products database
-  const products = [
-    { id: "123456789", name: "Coca-Cola 500ml", price: 2.50, category: "Beverages", image: "coca.jpg" },
-    { id: "234567890", name: "Lays Potato Chips", price: 1.75, category: "Snacks", image: "chips.jpg" },
-    { id: "345678901", name: "Whole Milk 1L", price: 3.25, category: "Dairy", image: "milk.jpg" },
-    { id: "456789012", name: "Mineral Water", price: 1.25, category: "Beverages", image: "water.jpg" },
-    { id: "567890123", name: "Chocolate Bar", price: 2.00, category: "Snacks", image: "chocolate.jpg" },
-    { id: "678901234", name: "Bread Loaf", price: 1.50, category: "Bakery", image: "bread.jpg" },
-    { id: "789012345", name: "Apple Juice", price: 2.25, category: "Beverages", image: "juice.jpg" },
-    { id: "890123456", name: "Cookies Pack", price: 2.75, category: "Snacks", image: "cookies.jpg" },
-  ];
+
   
   // Calculate cart total
   const cartTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   
   // Handle successful scan
   const onScanSuccess = (decodedText) => {
-    const product = products.find(p => p.id === decodedText);
+    const product = productData.find(p => p.id === decodedText);
     
     if (product) {
       addToCart(product);
