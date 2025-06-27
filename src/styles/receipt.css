@@ -1,0 +1,362 @@
+/* src/styles/receipt.css */
+:root {
+  --primary: #2c6fbb;
+  --primary-light: #e3f2fd;
+  --secondary: #6c757d;
+  --success: #28a745;
+  --dark: #2c3e50;
+  --gray: #7f8c8d;
+  --light-gray: #ecf0f1;
+  --light: #f8f9fa;
+  --border-radius: 8px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.ReceiptWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  min-height: 100vh;
+  background-color: #f5f7fb;
+  padding-bottom: 5rem;
+}
+
+.receipt-container {
+  width: 100%;
+  max-width: 500px;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  position: relative;
+}
+
+/* Back button */
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.back-button:hover {
+  background-color: var(--primary-light);
+}
+
+.back-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Header */
+.receipt-header {
+  text-align: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px dashed var(--light-gray);
+}
+
+.receipt-header h2 {
+  font-size: 1.4rem;
+  color: var(--dark);
+  margin-bottom: 0.5rem;
+}
+
+.receipt-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+/* Store info */
+.receipt-store-info {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.receipt-store-info h3 {
+  font-size: 1.1rem;
+  color: var(--dark);
+  margin-bottom: 0.3rem;
+}
+
+.receipt-store-info p {
+  margin: 0.2rem 0;
+  color: var(--gray);
+}
+
+/* Items - Responsive grid */
+.receipt-items {
+  margin-bottom: 1rem;
+}
+
+.receipt-items-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  font-weight: 600;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--light-gray);
+  color: var(--dark);
+  font-size: 0.9rem;
+}
+
+.receipt-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--light-gray);
+  font-size: 0.9rem;
+}
+
+.item-name {
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+}
+
+.item-category {
+  font-size: 0.75rem;
+  color: var(--gray);
+  margin-top: 0.2rem;
+}
+
+.item-qty, .item-price, .item-total {
+  text-align: right;
+  padding-right: 0.3rem;
+}
+
+.item-total {
+  font-weight: 600;
+}
+
+/* Totals */
+.receipt-totals {
+  margin-bottom: 1rem;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  font-size: 0.95rem;
+}
+
+.grand-total {
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-top: 2px solid var(--light-gray);
+  padding-top: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+/* Payment */
+.receipt-payment {
+  background: var(--primary-light);
+  padding: 0.8rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.payment-method {
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: capitalize;
+}
+
+/* Footer */
+.receipt-footer {
+  text-align: center;
+  padding-top: 0.8rem;
+  border-top: 1px dashed var(--light-gray);
+  color: var(--gray);
+  font-size: 0.85rem;
+}
+
+/* Actions */
+.receipt-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.2rem;
+}
+
+.print-button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
+  font-size: 0.95rem;
+}
+
+.print-button:hover {
+  background: #1a4a8a;
+}
+
+.print-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Loading and Error States */
+.receipt-loading, .receipt-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.receipt-error h3 {
+  font-size: 1.2rem;
+  color: #e74c3c;
+  margin: 1rem 0 0.5rem;
+}
+
+.receipt-error p {
+  font-size: 0.95rem;
+  color: var(--gray);
+  margin-bottom: 1.5rem;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--light-gray);
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white;
+  }
+  
+  .ReceiptWrapper {
+    padding: 0;
+    background: white;
+  }
+  
+  .receipt-container {
+    box-shadow: none;
+    max-width: 100%;
+    padding: 1rem;
+  }
+  
+  .back-button, .receipt-actions {
+    display: none;
+  }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 480px) {
+  .receipt-container {
+    padding: 1rem;
+  }
+  
+  .back-button {
+    font-size: 0.85rem;
+    padding: 0.4rem;
+  }
+  
+  .receipt-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .receipt-store-info h3 {
+    font-size: 1rem;
+  }
+  
+  .receipt-store-info p {
+    font-size: 0.8rem;
+  }
+  
+  .receipt-items-header {
+    font-size: 0.8rem;
+    grid-template-columns: 1.5fr 0.8fr 1fr 1fr;
+  }
+  
+  .receipt-item {
+    font-size: 0.8rem;
+    grid-template-columns: 1.5fr 0.8fr 1fr 1fr;
+  }
+  
+  .item-category {
+    font-size: 0.7rem;
+  }
+  
+  .receipt-row {
+    font-size: 0.9rem;
+  }
+  
+  .grand-total {
+    font-size: 1rem;
+  }
+  
+  .receipt-payment {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+  
+  .receipt-footer {
+    font-size: 0.8rem;
+  }
+  
+  .print-button {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .receipt-items-header,
+  .receipt-item {
+    grid-template-columns: 1.2fr 0.7fr 0.9fr 0.9fr;
+  }
+  
+  .receipt-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .receipt-meta {
+    font-size: 0.75rem;
+  }
+  
+  .item-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

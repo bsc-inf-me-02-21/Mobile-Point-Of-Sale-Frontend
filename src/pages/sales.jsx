@@ -127,7 +127,7 @@ function SalesPage() {
                 <div 
                   className="transaction-item" 
                   key={transaction.id}
-                  onClick={() => navigate(`/transaction/${transaction.id}`)}
+                  onClick={() => navigate(`/receipt/${transaction.id}`)}
                 >
                   <div className="transaction-time">{transaction.time}</div>
                   <div className="transaction-amount">MK{transaction.amount.toFixed(2)}</div>

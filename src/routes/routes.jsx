@@ -4,6 +4,7 @@ import Inventory from '../pages/inventory.jsx';
 import Products from '../pages/products.jsx';
 import More from "../pages/more.jsx";
 import Cart from "../components/cart.jsx";
+import Receipt from "../components/receipt.jsx";
 
 const RoutesComponent = () => {
   
@@ -32,6 +33,9 @@ const RoutesComponent = () => {
             <Route path="/cart" 
              element={<Cart />}
              />
+             
+            
+     <Route path="/receipt/:id" element={<Receipt />} />
         
        
        </Routes>
