@@ -2,8 +2,9 @@ import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BarcodeScanner from "../components/barcode-scanner.jsx";
 import { useCart } from "../context/cart-context.jsx";
-import "../styles/cart.css";
 import { ProductsContext } from "../context/products-context.jsx";
+import { useTransactions } from "../context/transaction-context.jsx";
+import "../styles/cart.css";
 
 const Cart = () => {
   const [isScanning, setIsScanning] = useState(false);
@@ -14,6 +15,7 @@ const Cart = () => {
   const [paymentError, setPaymentError] = useState("");
   const navigate = useNavigate();
   const { productsData } = useContext(ProductsContext);
+  const { addTransaction } = useTransactions();
   
   const { 
     cartItems, 
@@ -90,7 +92,6 @@ const Cart = () => {
   // Handle payment amount change
   const handleAmountChange = (e) => {
     const value = e.target.value;
-    // Allow only numbers and decimal point
     if (/^\d*\.?\d*$/.test(value) || value === "") {
       setAmountPaid(value);
       setPaymentError("");
@@ -111,28 +112,36 @@ const Cart = () => {
       return;
     }
 
+    // Calculate change
+    const change = paymentType === "cash" ? Math.max(0, paid - cartTotal) : 0;
+
     // Create transaction
-    const now = new Date();
     const transaction = {
-      id: Date.now().toString(),
       items: cartItems.map(item => ({
         id: item.id,
         name: item.name,
+        category: item.category,
         quantity: item.quantity,
         price: item.price
       })),
       subtotal: cartSubtotal,
       tax: tax,
       total: cartTotal,
-      time: now.toLocaleTimeString(),
-      date: now.toLocaleDateString(),
       salesperson: "staff",
       payment: paymentType,
-      amountPaid: paid
+      amountPaid: paid,
+      change: change
     };
 
-    console.log("Transaction completed:", transaction);
-    alert(`Sale completed successfully! Total: MK${cartTotal.toFixed(2)}`);
+    // Add to transaction context
+    const newTransaction = addTransaction(transaction);
+    
+    alert(
+      `Sale completed successfully!\n
+      Transaction ID: ${newTransaction.id}\n
+      Total: MK${cartTotal.toFixed(2)}\n
+      Payment: ${paymentType.toUpperCase()}`
+    );
     
     // Reset everything
     resetCart();
@@ -161,7 +170,75 @@ const Cart = () => {
           isScanning={isScanning}
         />
         
-        {/* ... existing scanner UI elements ... */}
+        {!hasCameraPermission && isScanning && (
+          <div className="camera-permission-prompt">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+              <path fill="#ff9800" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            <p>Please allow camera access</p>
+            <button onClick={startScanning}>Retry</button>
+          </div>
+        )}
+        
+        {!isScanning && cartItems.length > 0 && (
+          <div className="scan-success">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+              <path fill="#28a745" d="m10 13.6l5.9-5.9q.275-.275.7-.275t.7.275q.275.275.275.7t-.275.7l-6.6 6.6q-.3.3-.7.3t-.7-.3l-2.6-2.6q-.275-.275-.275-.7t.275-.7q.275-.275.7-.275t.7.275l1.9 1.9Z"/>
+            </svg>
+            <p>Product added to cart!</p>
+          </div>
+        )}
+        
+        {!isScanning && cartItems.length === 0 && !scanError && (
+          <div className="scan-placeholder">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
+              <path fill="var(--gray)" d="M2 6h4v12H2V6m5 0h4v12H7V6m5 0h4v12h-4V6m5 0h4v12h-4V6Z"/>
+            </svg>
+            <p>Position barcode inside frame</p>
+          </div>
+        )}
+        
+        {scanError && (
+          <div className="scan-error">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+              <path fill="#dc3545" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+            {scanError}
+          </div>
+        )}
+        
+        <div className="scan-controls">
+          <button 
+            className={`scan-btn ${isScanning ? 'scanning-active' : ''}`}
+            onClick={isScanning ? stopScanning : startScanning}
+          >
+            {isScanning ? (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+                Stop Scanning
+              </>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M4 4h4v2H4V4m14 0v2h2v4h2V4h-4m-2 14h2v4h-2v-4M4 16v2h2v4h2v-4H4m0-2h4v2H4v-2M2 2v6h6V2H2m10 0v6h6V2h-6m6 16v6h-6v-6h6M8 2v6H2V2h6Z"/>
+                </svg>
+                Scan Barcode
+              </>
+            )}
+          </button>
+          
+          <button 
+            className="select-btn"
+            onClick={() => navigate("/products")}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M19 5v14H5V5h14m0-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 13l-4-4l1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"/>
+            </svg>
+            Select Products
+          </button>
+        </div>
         
         <div className="cart-section">
           <div className="cart-header">
@@ -246,7 +323,12 @@ const Cart = () => {
               
               {/* Payment Section */}
               <div className="payment-section">
-                <h4>Payment Details</h4>
+                <h4>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                  </svg>
+                  Payment Details
+                </h4>
                 
                 <div className="payment-method">
                   <label>
@@ -299,6 +381,9 @@ const Cart = () => {
               
               <div className="sale-actions">
                 <button className="complete-sale" onClick={handleCompleteSale}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M20 12c0-1.1-.9-2-2-2V7c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v3c-1.1 0-2 .9-2 2v5h1.33L6 19h1l.67-2h8.67l.66 2h1l.67-2H20v-5m-4-2h-3V7h3v3M8 7h3v3H8V7m-2 5h12v3H6v-3Z"/>
+                  </svg>
                   Complete Sale
                 </button>
               </div>

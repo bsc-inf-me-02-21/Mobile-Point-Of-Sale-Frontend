@@ -176,3 +176,31 @@
   font-weight: 700;
   color: var(--primary);
 }
+
+.no-transactions {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--gray);
+  background: var(--light);
+  border-radius: var(--border-radius);
+}
+
+.no-transactions svg {
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+.no-transactions p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.transaction-item {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.transaction-item:hover {
+  transform: translateX(5px);
+  background-color: rgba(67, 97, 238, 0.05);
+}

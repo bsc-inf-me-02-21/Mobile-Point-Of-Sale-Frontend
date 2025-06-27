@@ -1,12 +1,11 @@
-// src/components/SalesPage.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "../styles/sales.css";
 import { useNavigate } from "react-router-dom";
+import { useTransactions } from "../context/transaction-context"; // ADDED
 
 function SalesPage() {
-  
   const navigate = useNavigate();
-  
+  const { getAllTransactions } = useTransactions(); // ADDED
   
   const [salesData, setSalesData] = useState({
     todaySales: 0,
@@ -14,30 +13,57 @@ function SalesPage() {
     transactions: []
   });
 
-  // Simulate loading sales data
+  // Load real transaction data
   useEffect(() => {
-    // This would be API call in real app
-    setTimeout(() => {
+    const loadSalesData = () => {
+      const allTransactions = getAllTransactions();
+      
+      // Get today's date in the same format used in transactions
+      const today = new Date();
+      const todayFormatted = today.toLocaleDateString();
+      
+      // Filter today's transactions
+      const todaysTransactions = allTransactions.filter(
+        transaction => transaction.date === todayFormatted
+      );
+      
+      // Calculate today's sales total
+      const todaySales = todaysTransactions.reduce(
+        (total, transaction) => total + transaction.total,
+        0
+      );
+      
+      // Calculate average ticket
+      const avgTicket = todaysTransactions.length > 0
+        ? todaySales / todaysTransactions.length
+        : 0;
+      
+      // Get recent transactions (last 5)
+      const recentTransactions = allTransactions
+        .slice(0, 5)
+        .map(t => ({
+          id: t.id,
+          time: t.time,
+          amount: t.total
+        }));
+      
       setSalesData({
-        todaySales: 2845.75,
-        avgTicket: 32.50,
-        transactions: [
-          { id: 1, time: "09:15", amount: 42.50 },
-          { id: 2, time: "10:30", amount: 18.75 },
-          { id: 3, time: "11:45", amount: 56.25 }
-        ]
+        todaySales,
+        avgTicket,
+        transactions: recentTransactions
       });
-    }, 800);
-  }, []);
-
-  const handleNewSale = () => {
-    console.log("Initiate new sale process");
-    // In a real app, this would trigger the sale flow
-  };
+    };
+    
+    loadSalesData();
+    
+    // Refresh data every minute
+    const interval = setInterval(loadSalesData, 60000);
+    
+    return () => clearInterval(interval);
+  }, [getAllTransactions]);
 
   return (
     <div className="pos-container">
-     
       <div className="dashboard-section">
         <h2 className="section-title">Sales Dashboard</h2>
         
@@ -56,6 +82,7 @@ function SalesPage() {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                 <path fill="currentColor" d="m5 9l7 7l7-7z"/>
               </svg>
+              {/* Real trend calculation would go here */}
               12.5%
             </div>
           </div>
@@ -74,6 +101,7 @@ function SalesPage() {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M7 10h10v4H7z"/>
               </svg>
+              {/* Real trend calculation would go here */}
               0.3%
             </div>
           </div>
@@ -93,14 +121,28 @@ function SalesPage() {
         
         <div className="recent-transactions">
           <h3 className="sub-section-title">Recent Transactions</h3>
-          <div className="transactions-list">
-            {salesData.transactions.map(transaction => (
-              <div className="transaction-item" key={transaction.id}>
-                <div className="transaction-time">{transaction.time}</div>
-                <div className="transaction-amount">MK{transaction.amount.toFixed(2)}</div>
-              </div>
-            ))}
-          </div>
+          {salesData.transactions.length > 0 ? (
+            <div className="transactions-list">
+              {salesData.transactions.map(transaction => (
+                <div 
+                  className="transaction-item" 
+                  key={transaction.id}
+                  onClick={() => navigate(`/transaction/${transaction.id}`)}
+                >
+                  <div className="transaction-time">{transaction.time}</div>
+                  <div className="transaction-amount">MK{transaction.amount.toFixed(2)}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="no-transactions">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+                <path fill="var(--gray)" d="M20 12c0-1.1-.9-2-2-2V7c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v3c-1.1 0-2 .9-2 2v5h1.33L4 19h1l.67-2h8.66l.67 2h1l.67-2H20v-5zm-4-2h-3V7h3v3zM8 7h3v3H8V7zm-2 5h12v3H6v-3z"/>
+              </svg>
+              <p>No transactions yet</p>
+              <p>Start a new sale to see transaction history</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
