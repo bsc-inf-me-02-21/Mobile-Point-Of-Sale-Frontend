@@ -1,0 +1,113 @@
+/* src/styles/barcode-scanner.css */
+
+/* --- Scanner Viewport --- */
+.scanner-viewport {
+  background: #111;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 4/3;
+  border: 2px solid #2c6fbb;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+}
+
+/* --- Scanner Elements --- */
+.scanner-active {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.scanner-element {
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.scanner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.scanner-frame {
+  width: 70%;
+  max-width: 300px;
+  height: 150px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  position: relative;
+}
+
+/* --- Laser Animation --- */
+.laser {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: #e74c3c;
+  box-shadow: 0 0 15px #e74c3c;
+  animation: scan 2s infinite ease-in-out;
+}
+
+@keyframes scan {
+  0% { top: 0; }
+  50% { top: calc(100% - 4px); }
+  100% { top: 0; }
+}
+
+/* --- Scanning Indicator --- */
+.scanning-indicator {
+  text-align: center;
+  color: white;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  z-index: 25;
+}
+
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Error Message --- */
+.scan-error {
+  background: #e74c3c;
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

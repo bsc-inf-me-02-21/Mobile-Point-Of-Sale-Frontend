@@ -1,437 +1,218 @@
-/* --- Root Variables and Basic Resets --- */
+/* src/components/cart.css */
+
+/* --- Root Variables --- */
 :root {
-  --primary: #007bff; /* A nice, standard blue for primary actions */
-  --primary-dark: #0056b3; /* Darker shade for hover states */
-  --secondary: #6c757d; /* Muted gray for secondary actions */
-  --secondary-dark: #5a6268; /* Darker shade for hover */
+  --primary: #2c6fbb;
+  --primary-dark: #1a4a8a;
+  --secondary: #6c757d;
+  --secondary-dark: #5a6268;
   --success: #28a745;
-  --danger: #dc3545;
-  --warning: #ffc107;
-  --info: #17a2b8;
-
-  --dark: #343a40; /* Dark text/element color */
-  --gray: #6c757d; /* Medium gray for secondary text */
-  --light-gray: #e9ecef; /* Light gray for borders/dividers */
-  --light: #f8f9fa; /* Very light background for elements */
-
-  --background-color: #f5f7fb; /* Main page background */
-  --card-background: #ffffff; /* Card/section background */
-
-  --border-radius: 8px; /* Consistent border radius */
-  --transition-speed: 0.2s; /* Standard transition duration */
-  --shadow-light: rgba(0, 0, 0, 0.08) 0px 4px 12px; /* Lighter shadow for general elements */
-  --shadow-medium: rgba(0, 0, 0, 0.15) 0px 8px 24px; /* Stronger shadow for emphasis */
-}
-
-/* Optional: Basic box-sizing reset for easier layout */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-/* Optional: Remove default margin/padding for consistency */
-body, h1, h2, h3, h4, p, ul, ol, figure, blockquote, dl, dd {
-  margin: 0;
-  padding: 0;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block; /* Removes extra space below images */
+  --danger: #e74c3c;
+  --warning: #f39c12;
+  --info: #3498db;
+  
+  --dark: #2c3e50;
+  --gray: #7f8c8d;
+  --light-gray: #ecf0f1;
+  --light: #f8f9fa;
+  
+  --background-color: #f5f7fb;
+  --card-background: #ffffff;
+  
+  --border-radius: 12px;
+  --transition-speed: 0.25s;
+  --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 /* --- Layout and Wrapper Styles --- */
 .CartWrapper {
-  background-color: var(--background-color); /* Use variable */
-  min-height: 100vh; /* Use min-height to allow content to push it */
-  padding: 20px; /* Slightly increased padding for breathing room */
+  min-height: 100vh;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center content horizontally */
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: var(--background-color);
 }
 
 .scanner-container {
-  max-width: 500px;
   width: 100%;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Slightly increased gap for better spacing */
-  padding: 0 10px; /* Add some horizontal padding for smaller screens */
+  gap: 1.5rem;
 }
 
-/* --- Scanner Section Styles --- */
-.scanner-title {
-  font-size: 1.8rem; /* Slightly larger for prominence */
+/* --- Typography --- */
+h1, h2, h3, h4 {
   font-weight: 700;
+  line-height: 1.2;
+}
+
+.scanner-title {
+  font-size: 1.75rem;
   color: var(--dark);
   text-align: center;
-  margin-bottom: 15px; /* More space below title */
-}
-
-.scanner-viewport {
-  background: black;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  position: relative;
-  aspect-ratio: 4/3;
-  border: 2px solid var(--primary); /* Use primary color for scanner border */
-  box-shadow: var(--shadow-medium); /* Add a subtle shadow */
-}
-
-.scanner-active {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex; /* Ensure inner content is centered if needed */
-  align-items: center;
-  justify-content: center;
-}
-
-.scanner-element {
-  width: 100%;
-  height: 100%;
-  z-index: 10; /* Lower z-index for scanner to be behind overlays */
-  position: absolute; /* Ensures it fills its parent */
-  top: 0;
-  left: 0;
-}
-
-.scanner-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none; /* Crucial for interactions below */
-  z-index: 20; /* Above scanner, below critical prompts */
-  /* Added a subtle transparent background for better contrast if needed */
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.scanner-frame {
-  width: 70%; /* Slightly smaller frame to draw more attention to center */
-  max-width: 300px; /* Max width for consistency */
-  height: 150px;
-  border: 2px solid rgba(255, 255, 255, 0.7); /* Slightly stronger white border */
-  position: relative;
-  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); /* Creates the dark outer mask effect */
-}
-
-.laser {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px; /* Slightly thicker laser line */
-  background: var(--danger); /* Use danger color for laser */
-  box-shadow: 0 0 15px var(--danger); /* Stronger glow */
-  animation: scan 2s infinite linear;
-}
-
-@keyframes scan {
-  0% { top: 0; }
-  50% { top: calc(100% - 3px); } /* Adjust for laser height */
-  100% { top: 0; }
-}
-
-.scan-placeholder,
-.scan-success,
-.scanning-indicator {
-  text-align: center;
-  color: white;
-  padding: 30px; /* Increased padding */
-  display: flex; /* Use flexbox for centering content */
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%; /* Ensures they fill the viewport */
-  position: absolute; /* Position over the scanner element */
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.8); /* Dark background for better contrast */
-  z-index: 5; /* Below permission prompt */
-}
-
-.scan-placeholder svg,
-.scan-success svg {
-  margin-bottom: 15px; /* More space below icons */
-  width: 72px; /* Larger icons */
-  height: 72px;
-}
-
-.scan-placeholder p {
-  font-size: 1rem; /* Slightly larger text */
-  opacity: 0.9;
-  line-height: 1.5;
-}
-
-.scanning-indicator {
-  /* Inherits flex properties from scan-placeholder */
-}
-
-.spinner {
-  width: 50px; /* Larger spinner */
-  height: 50px;
-  border: 5px solid rgba(255, 255, 255, 0.4); /* Slightly thicker and more opaque */
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s linear infinite;
-  margin-bottom: 15px; /* More space below spinner */
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* --- Permission Handling UI --- */
-.permission-prompt,
-.permission-denied {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 20px;
-  color: white;
-  z-index: 100; /* Ensure these are always on top */
-}
-
-.permission-prompt {
-  background: rgba(0, 0, 0, 0.85); /* Slightly darker for clear prompt */
-}
-
-.permission-prompt p {
-  font-size: 1.1rem;
-  margin-top: 15px;
-}
-
-.permission-denied {
-  background: rgba(0, 0, 0, 0.95); /* Very dark for error state */
-}
-
-.permission-denied svg {
-  width: 60px; /* Larger error icon */
-  height: 60px;
-  margin-bottom: 15px;
-}
-
-.permission-denied p {
-  font-size: 1.1rem;
-  margin-bottom: 20px;
-  line-height: 1.4;
-}
-
-.permission-denied button {
-  background: var(--danger); /* Use danger color for the button */
-  color: white;
-  border: none;
-  padding: 12px 25px; /* Larger button */
-  border-radius: var(--border-radius);
-  margin-top: 15px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: var(--transition-speed);
-}
-
-.permission-denied button:hover {
-  background: #bd2130; /* Darker red on hover */
-  transform: translateY(-2px);
-}
-
-/* --- Error Message Styling --- */
-.scan-error {
-  background: var(--danger); /* Use danger color */
-  color: white; /* White text on red background */
-  padding: 12px 20px; /* Increased padding */
-  border-radius: var(--border-radius);
-  margin-top: 15px; /* More space */
-  display: flex;
-  align-items: center;
-  gap: 10px; /* Increased gap */
-  font-size: 1rem; /* Slightly larger font */
-  box-shadow: var(--shadow-light); /* Add a subtle shadow */
-}
-
-.scan-error svg {
-  color: white; /* Ensure SVG is white */
+  margin-bottom: 1rem;
 }
 
 /* --- Scan Controls --- */
 .scan-controls {
   display: flex;
-  gap: 15px; /* Increased gap between buttons */
-  flex-wrap: wrap; /* Allow buttons to wrap on small screens */
-  justify-content: center; /* Center buttons when wrapped */
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .scan-btn, .select-btn {
-  flex: 1; /* Allows buttons to share space */
-  min-width: 150px; /* Ensure buttons don't get too small */
-  padding: 18px; /* Larger padding for better touch targets */
+  flex: 1;
+  min-width: 160px;
+  padding: 1rem;
   border-radius: var(--border-radius);
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all var(--transition-speed) ease; /* Use all for smooth transitions */
+  transition: all var(--transition-speed);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px; /* Increased gap between text and icon */
-  box-shadow: var(--shadow-light); /* Subtle shadow on buttons */
+  gap: 0.75rem;
+  box-shadow: var(--shadow-light);
+  border: none;
 }
 
 .scan-btn {
   background: var(--primary);
   color: white;
-  border: none;
 }
 
-.scan-btn:hover:not(:disabled) {
+.scan-btn:hover {
   background: var(--primary-dark);
-  transform: translateY(-3px); /* More pronounced lift on hover */
-}
-
-.scan-btn:disabled {
-  opacity: 0.6; /* Slightly more opaque when disabled */
-  cursor: not-allowed;
-  box-shadow: none; /* No shadow when disabled */
+  transform: translateY(-3px);
 }
 
 .select-btn {
-  background: var(--secondary); /* Use secondary variable */
+  background: var(--secondary);
   color: white;
-  border: none;
 }
 
 .select-btn:hover {
-  background: var(--secondary-dark); /* Darker secondary on hover */
+  background: var(--secondary-dark);
   transform: translateY(-3px);
 }
 
 .scan-btn.scanning-active {
-  background: var(--secondary); /* Matches select-btn for consistency */
+  background: var(--secondary);
   color: white;
-}
-
-.scan-btn.scanning-active:hover {
-  background: var(--secondary-dark); /* Matches select-btn hover */
 }
 
 /* --- Cart Section --- */
 .cart-section {
-  background: var(--card-background); /* Use variable */
+  background: var(--card-background);
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow-medium); /* Stronger shadow for the main cart section */
-  padding: 25px; /* Increased padding */
-  width: 100%; /* Ensure it takes full width of scanner-container */
-  margin-top: 30px; /* More space above cart section */
+  box-shadow: var(--shadow-medium);
+  padding: 1.5rem;
+  width: 100%;
+  margin-top: 1.5rem;
 }
 
 .cart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px; /* Increased space below header */
+  margin-bottom: 1.5rem;
 }
 
 .cart-title {
-  font-size: 1.3rem; /* Slightly larger title */
-  font-weight: 700; /* Bold title */
-  color: var(--dark);
+  font-size: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.75rem;
 }
 
 .cart-title svg {
-  color: var(--primary); /* Color icon with primary color */
+  color: var(--primary);
 }
 
 .reset-cart-btn {
-  background: var(--light-gray); /* Use variable */
-  color: var(--gray); /* Use variable */
-  border: none; /* Remove border for cleaner look */
-  border-radius: 25px; /* More rounded pill shape */
-  padding: 10px 15px; /* More padding */
+  background: var(--light-gray);
+  color: var(--gray);
+  border: none;
+  border-radius: 2rem;
+  padding: 0.6rem 1rem;
   font-size: 0.9rem;
-  font-weight: 600; /* Bolder text */
+  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 8px; /* Increased gap */
+  gap: 0.5rem;
   cursor: pointer;
-  transition: all var(--transition-speed) ease;
+  transition: all var(--transition-speed);
 }
 
 .reset-cart-btn:hover {
-  background: var(--gray); /* Darker gray on hover */
-  color: white; /* White text on hover */
+  background: var(--gray);
+  color: white;
 }
 
 /* --- Empty Cart State --- */
 .empty-cart {
   text-align: center;
-  padding: 40px 0; /* More padding */
+  padding: 2.5rem 0;
   color: var(--gray);
 }
 
 .empty-cart p {
-  margin: 10px 0; /* More margin */
-  font-size: 1rem;
+  margin: 0.75rem 0;
+  font-size: 1.05rem;
 }
 
 .empty-cart svg {
-  opacity: 0.4; /* Slightly less opaque */
-  margin-bottom: 20px; /* More space below icon */
-  width: 72px; /* Larger icon */
-  height: 72px;
-  color: var(--gray); /* Ensure empty cart icon matches gray */
+  opacity: 0.3;
+  margin-bottom: 1.5rem;
+  width: 5rem;
+  height: 5rem;
 }
 
-/* --- Cart Items List --- */
+/* --- Cart Items --- */
 .cart-items {
   display: flex;
   flex-direction: column;
-  gap: 18px; /* Increased gap between items */
-  margin-bottom: 25px; /* More space below items list */
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .cart-item {
   display: flex;
-  gap: 15px; /* Increased gap */
-  padding-bottom: 18px;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
   border-bottom: 1px solid var(--light-gray);
-  align-items: center; /* Vertically align items */
+  align-items: center;
 }
 
 .cart-item:last-child {
-  border-bottom: none; /* No border for the last item */
+  border-bottom: none;
   padding-bottom: 0;
 }
 
 .item-image {
-  width: 70px; /* Larger image */
-  height: 70px;
-  border-radius: 10px; /* Slightly more rounded corners */
+  width: 5rem;
+  height: 5rem;
+  border-radius: 0.75rem;
   overflow: hidden;
-  flex-shrink: 0; /* Prevent image from shrinking */
+  flex-shrink: 0;
+  background: var(--light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .image-placeholder {
   width: 100%;
   height: 100%;
-  background-color: var(--light);
-  background-size: cover; /* Use cover to ensure image fills area, or contain if preferred */
+  background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
 }
 
 .item-info {
@@ -442,75 +223,74 @@ img {
 }
 
 .item-info h4 {
-  font-size: 1.1rem; /* Slightly larger title */
-  margin-bottom: 6px;
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
   color: var(--dark);
 }
 
 .item-category {
-  font-size: 0.9rem; /* Slightly larger category text */
+  font-size: 0.9rem;
   color: var(--gray);
-  margin-bottom: 10px;
+  margin-bottom: 0.75rem;
 }
 
 .price-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: auto; /* Pushes price row to the bottom if content is uneven */
 }
 
 .item-price {
-  font-weight: 700; /* Bolder price */
-  font-size: 1.1rem; /* Larger price */
+  font-weight: 700;
+  font-size: 1.15rem;
   color: var(--primary);
 }
 
 .item-qty {
   display: flex;
   align-items: center;
-  gap: 10px; /* Increased gap */
-  background: var(--light-gray); /* Use light-gray */
-  border-radius: 25px; /* More rounded pill shape */
-  padding: 6px 12px; /* More padding */
+  gap: 0.75rem;
+  background: var(--light-gray);
+  border-radius: 2rem;
+  padding: 0.4rem 0.8rem;
   font-weight: 600;
   color: var(--dark);
 }
 
 .item-qty button {
-  width: 32px; /* Larger buttons */
-  height: 32px;
+  width: 1.8rem;
+  height: 1.8rem;
   border-radius: 50%;
   border: 1px solid var(--light-gray);
-  background: var(--card-background); /* White background */
+  background: var(--card-background);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-speed) ease;
+  transition: all var(--transition-speed);
   font-weight: bold;
-  font-size: 1.1rem; /* Larger text for buttons */
+  font-size: 1.1rem;
   color: var(--dark);
 }
 
 .item-qty button:hover {
-  background: var(--primary); /* Primary color on hover */
+  background: var(--primary);
   border-color: var(--primary);
   color: white;
 }
 
-/* --- Cart Total Section --- */
+/* --- Cart Total --- */
 .cart-total {
   border-top: 1px solid var(--light-gray);
-  padding-top: 20px; /* More padding */
-  margin-top: 20px; /* Ensures space from items */
+  padding-top: 1.5rem;
+  margin-top: 1rem;
 }
 
 .total-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px; /* Increased margin */
-  font-size: 1rem; /* Slightly larger font */
+  margin-bottom: 0.75rem;
+  font-size: 1.05rem;
   color: var(--dark);
 }
 
@@ -524,89 +304,110 @@ img {
 
 .grand-total {
   font-weight: 700;
-  font-size: 1.3rem; /* More prominent total */
-  margin-top: 15px; /* More space */
-  padding-top: 15px;
-  border-top: 1px dashed var(--light-gray);
-  color: var(--primary); /* Primary color for grand total */
+  font-size: 1.4rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px dashed var(--light-gray);
+  color: var(--primary);
 }
 
 /* --- Sale Actions --- */
 .sale-actions {
-  margin-top: 30px; /* More space above action button */
+  margin-top: 1.5rem;
 }
 
 .complete-sale {
-  background: var(--primary);
+  background: var(--success);
   color: white;
   border: none;
   width: 100%;
-  padding: 18px; /* Larger button */
+  padding: 1.1rem;
   border-radius: var(--border-radius);
   font-weight: 700;
-  font-size: 1.2rem; /* Larger font */
+  font-size: 1.15rem;
   cursor: pointer;
-  transition: all var(--transition-speed) ease;
-  box-shadow: var(--shadow-medium); /* Stronger shadow for the main action */
+  transition: all var(--transition-speed);
+  box-shadow: var(--shadow-medium);
 }
 
 .complete-sale:hover {
-  background: var(--primary-dark);
-  transform: translateY(-3px); /* More pronounced lift on hover */
+  background: #218838;
+  transform: translateY(-3px);
 }
 
-/* --- Media Queries for Responsiveness --- */
-@media (max-width: 600px) {
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
   .CartWrapper {
-    padding: 15px;
+    padding: 1rem;
   }
-
-  .scanner-container {
-    gap: 20px;
-  }
-
+  
   .scanner-title {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
-
-  .scan-controls {
-    flex-direction: column; /* Stack buttons vertically on small screens */
-    gap: 10px;
-  }
-
-  .scan-btn, .select-btn {
-    width: 100%; /* Full width for stacked buttons */
-    min-width: unset; /* Remove min-width constraint */
-  }
-
+  
   .cart-section {
-    padding: 20px;
-    margin-top: 25px;
+    padding: 1.25rem;
   }
-
+  
+  .scan-controls {
+    flex-direction: column;
+  }
+  
+  .scan-btn, .select-btn {
+    width: 100%;
+  }
+  
   .cart-header {
-    flex-direction: column; /* Stack header elements */
+    flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 0.75rem;
   }
-
+  
   .reset-cart-btn {
-    align-self: flex-end; /* Align to the right if stacked */
+    align-self: flex-end;
   }
-
+  
   .cart-item {
-    flex-direction: column; /* Stack image and info vertically */
+    flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 0.75rem;
   }
-
+  
   .item-image {
-    width: 80px;
-    height: 80px;
+    width: 100%;
+    max-width: 120px;
+    height: 120px;
   }
-
+  
   .price-row {
-    width: 100%; /* Ensure price row takes full width */
+    width: 100%;
+  }
+  
+  .grand-total {
+    font-size: 1.3rem;
   }
 }
 
+@media (max-width: 480px) {
+  .scanner-title {
+    font-size: 1.4rem;
+  }
+  
+  .cart-title {
+    font-size: 1.3rem;
+  }
+  
+  .item-qty {
+    padding: 0.3rem 0.6rem;
+  }
+  
+  .item-qty button {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+  
+  .complete-sale {
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+}
