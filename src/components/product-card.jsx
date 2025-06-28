@@ -24,7 +24,7 @@ function ProductCard() {
   });
   
   // Categories for tabs
-  const categories = ["All", "Beverages", "Snacks", "Dairy"];
+  const categories = ["All", "Alcohol", "Beauty", "Personal Care", "Food"];
 
   return (
     <div className="pos-container">

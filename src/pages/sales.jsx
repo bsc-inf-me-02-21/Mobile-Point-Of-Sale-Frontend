@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import "../styles/sales.css";
 import { useNavigate } from "react-router-dom";
 import { useTransactions } from "../context/transaction-context"; // ADDED
+import Header from "../components/header.jsx";
+import sales from "../images/sales.svg";
 
 function SalesPage() {
   const navigate = useNavigate();
@@ -64,6 +66,10 @@ function SalesPage() {
 
   return (
     <div className="pos-container">
+     <Header 
+       name="Sales"
+       icon={sales}
+     />
       <div className="dashboard-section">
         <h2 className="section-title">Sales Dashboard</h2>
         
