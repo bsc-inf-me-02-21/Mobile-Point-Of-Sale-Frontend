@@ -1,92 +1,145 @@
-// src/components/ProductCard.jsx
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { ProductsContext } from "../context/products-context.jsx";
 import { useCart } from "../context/cart-context.jsx";
+import { useNavigate } from 'react-router-dom';
+import { FaCartPlus } from 'react-icons/fa
+import { FaShoppingCart } from 'react-icons/fa'; 
+
 import "../styles/product-card.css";
 
-
-
 function ProductCard() {
-  const {productsData} = useContext(ProductsContext);
-  const { addToCart } = useCart();
-  
-  // State for active category
+  const { productsData } = useContext(ProductsContext);
+  const { addToCart, cartItems } = useCart();
+  const navigate = useNavigate();
+
   const [activeCategory, setActiveCategory] = useState("All");
-  // State for search query
   const [searchQuery, setSearchQuery] = useState("");
-  
-  // Filter products based on active category and search query
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const categories = ["All", ...new Set(productsData.map(p => p.category))];
+
   const filteredProducts = productsData.filter(product => {
     const matchesCategory = activeCategory === "All" || product.category === activeCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           product.category.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
-  
-  // Categories for tabs
-  const categories = ["All", "Alcohol", "Beauty", "Personal Care", "Food"];
+
+  const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleCartClick = () => {
+    navigate('/cart');
+  };
 
   return (
     <div className="pos-container">
-      {/* Search bar */}
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-         className="search-input"
-        />
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          width="20" 
-          height="20" 
-          viewBox="0 0 24 24"
-          className="search-icon"
-        >
-          <path fill="currentColor" d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5q0-2.725 1.888-4.612T9.5 3q2.725 0 4.612 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3l-1.4 1.4ZM9.5 14q1.875 0 3.188-1.313T14 9.5q0-1.875-1.313-3.188T9.5 5Q7.625 5 6.312 6.313T5 9.5q0 1.875 1.313 3.188T9.5 14Z"/>
-        </svg>
-      </div>
-      
-      {/* Conditionally render category tabs only when not searching */}
-      {!searchQuery && (
-        <div className="category-tabs">
-          {categories.map(category => (
+    
+      {/* Sticky header */}
+      <div className={`search-header ${isScrolled ? 'scrolled' : ''}`}>
+
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            className="search-icon"
+          >
+            <path fill="currentColor" d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5q0-2.725 1.888-4.612T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3l-1.4 1.4ZM9.5 14q1.875 0 3.188-1.313T14 9.5q0-1.875-1.313-3.188T9.5 5Q7.625 5 6.312 6.313T5 9.5q0 1.875 1.313 3.188T9.5 14Z"/>
+          </svg>
+
+          {searchQuery && (
             <button
-              key={category}
-              className={activeCategory === category ? "active" : ""}
-              onClick={() => setActiveCategory(category)}
+              className="clear-search"
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
             >
-              {category}
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"/>
+              </svg>
             </button>
-          ))}
+          )}
         </div>
-      )}
-      
+
+        {!searchQuery && (
+          <div className="category-tabs-wrapper">
+            <div className="category-tabs">
+              {categories.map(category => (
+                <button
+                  key={category}
+                  className={activeCategory === category ? "active" : ""}
+                  onClick={() => setActiveCategory(category)}
+                  aria-pressed={activeCategory === category}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Products grid */}
       <div className="card-container">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (
             <div className="product-card" key={product.id}>
               <div className="product-image-container">
-                <img 
-                  src={product.image} 
-                  alt={product.name} 
+                <div className="product-badge">
+                  <span className="category-badge">{product.category}</span>
+                  {product.quantity <= product.minStockLevel && (
+                    <span className="stock-badge">Low Stock</span>
+                  )}
+                </div>
+
+                <img
+                  src={product.image}
+                  alt={product.name}
                   className="product-image"
+                  loading="lazy"
                 />
               </div>
-              
+
               <div className="product-details">
                 <h3 className="product-name">{product.name}</h3>
-                <span className="product-category">{product.category}</span>
-                <div className="price-row">
-                  <span className="product-price">MK{product.price.toFixed(2)}</span>
-                  <button 
+
+                {/* Stock info */}
+                <div className="stock-info">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M17 3a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h10m0 2H7a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1m-1 4v2H8V7h8Z"/>
+                  </svg>
+                  <span>{product.quantity} in stock</span>
+                </div>
+
+                <div className="product-meta">
+                  <div className="price-row">
+                    <span className="product-price">MK{product.price.toFixed(2)}</span>
+                  </div>
+
+                  <button
                     className="add-to-cart-btn"
                     onClick={() => addToCart(product)}
+                    aria-label={`Add ${product.name} to cart`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2v-6Z"/>
-                    </svg>
+
+                    <FaCartPlus size={20} color="white" />}
+                    Add
                   </button>
                 </div>
               </div>
@@ -94,10 +147,27 @@ function ProductCard() {
           ))
         ) : (
           <div className="no-results">
-            <p>No products found</p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5S14 7.01 14 9.5S11.99 14 9.5 14z"/>
+            </svg>
+            <h3>No products found</h3>
+            <p>Try adjusting your search or filter</p>
           </div>
         )}
       </div>
+
+      {/* Floating Cart Button */}
+      <button
+        className="cart-fab"
+        aria-label="View cart"
+        onClick={handleCartClick}
+      >
+        
+        <FaShoppingCart size={24} color="white" /> 
+        {cartItemsCount > 0 && (
+          <span className="cart-count">{cartItemsCount}</span>
+        )}
+      </button>
     </div>
   );
 }

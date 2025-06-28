@@ -1,16 +1,6 @@
 /* src/styles/receipt.css */
-:root {
-  --primary: #2c6fbb;
-  --primary-light: #e3f2fd;
-  --secondary: #6c757d;
-  --success: #28a745;
-  --dark: #2c3e50;
-  --gray: #7f8c8d;
-  --light-gray: #ecf0f1;
-  --light: #f8f9fa;
-  --border-radius: 8px;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
+
+
 
 .ReceiptWrapper {
   display: flex;

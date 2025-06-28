@@ -11,8 +11,8 @@ import Dopel from "../images/products/dopel.png";
 import Nivea from "../images/products/nivea.jpg";
 import Gin from "../images/products/gin.jpg";
 import Protex from "../images/products/protex.png";
-import CarlsbergSpecial from "../images/products/carlsbergSpecial.png"; // New import
-import DawnRefresh from "../images/products/dawn-refresh.png"; // New import
+import CarlsbergSpecial from "../images/products/carlsbergSpecial.png";
+import DawnRefresh from "../images/products/dawn-refresh.png";
 
 
 const Products = [
@@ -23,6 +23,8 @@ const Products = [
     category: "Alcohol",
     image: Castel,
     quantity: 30,
+    minStockLevel: 10, // Added minStockLevel
+    expiryDate: "2026-12-31", // Added expiryDate
   },
   {
     id: "1177654301",
@@ -31,6 +33,8 @@ const Products = [
     category: "Alcohol",
     image: Baby,
     quantity: 25,
+    minStockLevel: 8,
+    expiryDate: "2027-06-15",
   },
   {
     id: "1177654302",
@@ -39,6 +43,8 @@ const Products = [
     category: "Alcohol",
     image: Green,
     quantity: 50,
+    minStockLevel: 15,
+    expiryDate: "2026-10-01",
   },
   {
     id: "1177654303",
@@ -47,6 +53,8 @@ const Products = [
     category: "Groceries",
     image: Sugar,
     quantity: 100,
+    minStockLevel: 30,
+    expiryDate: "2028-01-20",
   },
   {
     id: "1177654304",
@@ -55,6 +63,8 @@ const Products = [
     category: "Groceries",
     image: Kazinga,
     quantity: 40,
+    minStockLevel: 10,
+    expiryDate: "2027-09-01",
   },
   {
     id: "1177654305",
@@ -63,6 +73,8 @@ const Products = [
     category: "Food",
     image: Topsoy,
     quantity: 20,
+    minStockLevel: 5,
+    expiryDate: "2026-11-01",
   },
   {
     id: "1177654306",
@@ -71,6 +83,8 @@ const Products = [
     category: "Alcohol",
     image: Chill,
     quantity: 60,
+    minStockLevel: 20,
+    expiryDate: "2026-08-01",
   },
   {
     id: "1177654307",
@@ -79,6 +93,8 @@ const Products = [
     category: "Alcohol",
     image: Kk,
     quantity: 120,
+    minStockLevel: 40,
+    expiryDate: "2027-03-01",
   },
   {
     id: "1177654308",
@@ -87,6 +103,8 @@ const Products = [
     category: "Food",
     image: Topsoy2,
     quantity: 15,
+    minStockLevel: 5,
+    expiryDate: "2026-10-01",
   },
   {
     id: "1177654309",
@@ -95,6 +113,8 @@ const Products = [
     category: "Alcohol",
     image: Dopel,
     quantity: 35,
+    minStockLevel: 10,
+    expiryDate: "2027-01-01",
   },
   {
     id: "1177654310",
@@ -103,6 +123,8 @@ const Products = [
     category: "Beauty",
     image: Nivea,
     quantity: 28,
+    minStockLevel: 7,
+    expiryDate: "2028-05-01",
   },
   {
     id: "1177654311",
@@ -111,6 +133,8 @@ const Products = [
     category: "Alcohol",
     image: Gin,
     quantity: 22,
+    minStockLevel: 6,
+    expiryDate: "2027-07-01",
   },
   {
     id: "1177654312",
@@ -119,14 +143,18 @@ const Products = [
     category: "Personal Care",
     image: Protex,
     quantity: 80,
+    minStockLevel: 25,
+    expiryDate: "2028-02-01",
   },
   {
-    id: "6005165000890", 
+    id: "6005165000890",
     name: "Carlsberg Special",
     price: 2200,
     category: "Alcohol",
     image: CarlsbergSpecial,
     quantity: 45,
+    minStockLevel: 15,
+    expiryDate: "2026-09-01",
   },
   {
     id: "6001087009911",
@@ -135,6 +163,8 @@ const Products = [
     category: "Personal Care",
     image: DawnRefresh,
     quantity: 70,
+    minStockLevel: 20,
+    expiryDate: "2028-04-01",
   },
 ];
 
