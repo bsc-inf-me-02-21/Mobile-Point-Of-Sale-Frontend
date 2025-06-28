@@ -7,7 +7,7 @@ import "../styles/product-card.css";
 
 
 function ProductCard() {
-  const productData = useContext(ProductsContext);
+  const {productsData} = useContext(ProductsContext);
   const { addToCart } = useCart();
   
   // State for active category
@@ -16,7 +16,7 @@ function ProductCard() {
   const [searchQuery, setSearchQuery] = useState("");
   
   // Filter products based on active category and search query
-  const filteredProducts = productData.filter(product => {
+  const filteredProducts = productsData.filter(product => {
     const matchesCategory = activeCategory === "All" || product.category === activeCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           product.category.toLowerCase().includes(searchQuery.toLowerCase());

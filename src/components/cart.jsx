@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import BarcodeScanner from "../components/barcode-scanner.jsx";
 import { useCart } from "../context/cart-context.jsx";
@@ -13,6 +13,7 @@ const Cart = () => {
   const [paymentType, setPaymentType] = useState("cash");
   const [amountPaid, setAmountPaid] = useState("");
   const [paymentError, setPaymentError] = useState("");
+  const [isProcessingScan, setIsProcessingScan] = useState(false);
   const navigate = useNavigate();
   
   const { addTransaction } = useTransactions();
@@ -26,6 +27,12 @@ const Cart = () => {
     updateQuantity
   } = useCart();
 
+  // Track last scanned item to prevent duplicates
+  const lastScannedRef = useRef({ 
+    code: null, 
+    timestamp: 0 
+  });
+
   // Calculate cart totals
   const cartSubtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   const tax = cartSubtotal * 0.1;
@@ -33,6 +40,32 @@ const Cart = () => {
   
   const onScanSuccess = (decodedText) => {
     console.log("Raw scanned data:", decodedText);
+    
+    // Debounce check - prevent multiple scans of same code within 2 seconds
+    const now = Date.now();
+    if (
+      lastScannedRef.current.code === decodedText && 
+      now - lastScannedRef.current.timestamp < 2000
+    ) {
+      console.log("Duplicate scan ignored");
+      return;
+    }
+    
+    // Update last scanned reference
+    lastScannedRef.current = {
+      code: decodedText,
+      timestamp: now
+    };
+    
+    // Show processing indicator
+    setIsProcessingScan(true);
+    
+    // Product lookup
+    if (!productsData || productsData.length === 0) {
+      setScanError("Products not loaded yet. Please try again.");
+      setIsProcessingScan(false);
+      return;
+    }
     
     const product = productsData.find(p => 
       p.id === decodedText || 
@@ -46,6 +79,9 @@ const Cart = () => {
     } else {
       setScanError(`Product not found: ${decodedText}`);
     }
+    
+    // Hide processing indicator after delay
+    setTimeout(() => setIsProcessingScan(false), 500);
   };
   
   const onScanFailure = (errorMessage) => {
@@ -54,6 +90,7 @@ const Cart = () => {
         !errorMessage.includes("NoMultiFormatReader")) {
       console.warn(`QR error = ${errorMessage}`);
     }
+    setIsProcessingScan(false);
   };
   
   const startScanning = () => {
@@ -73,6 +110,7 @@ const Cart = () => {
   
   const stopScanning = () => {
     setIsScanning(false);
+    setIsProcessingScan(false);
   };
   
   useEffect(() => {
@@ -165,11 +203,25 @@ const Cart = () => {
       <div className="scanner-container">
         <h2 className="scanner-title">Scan Products</h2>
         
+        {productsLoading && (
+          <div className="products-loading">
+            <div className="spinner"></div>
+            <p>Loading products database...</p>
+          </div>
+        )}
+        
         <BarcodeScanner
           onScanSuccess={onScanSuccess}
           onScanFailure={onScanFailure}
-          isScanning={isScanning}
+          isScanning={isScanning && !productsLoading}
         />
+        
+        {isProcessingScan && (
+          <div className="scan-processing">
+            <div className="spinner"></div>
+            <p>Adding product to cart...</p>
+          </div>
+        )}
         
         {!hasCameraPermission && isScanning && (
           <div className="camera-permission-prompt">
@@ -181,7 +233,7 @@ const Cart = () => {
           </div>
         )}
         
-        {!isScanning && cartItems.length > 0 && (
+        {!isScanning && cartItems.length > 0 && !isProcessingScan && (
           <div className="scan-success">
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
               <path fill="#28a745" d="m10 13.6l5.9-5.9q.275-.275.7-.275t.7.275q.275.275.275.7t-.275.7l-6.6 6.6q-.3.3-.7.3t-.7-.3l-2.6-2.6q-.275-.275-.275-.7t.275-.7q.275-.275.7-.275t.7.275l1.9 1.9Z"/>
@@ -190,7 +242,7 @@ const Cart = () => {
           </div>
         )}
         
-        {!isScanning && cartItems.length === 0 && !scanError && (
+        {!isScanning && cartItems.length === 0 && !scanError && !isProcessingScan && (
           <div className="scan-placeholder">
             <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
               <path fill="var(--gray)" d="M2 6h4v12H2V6m5 0h4v12H7V6m5 0h4v12h-4V6m5 0h4v12h-4V6Z"/>
@@ -212,6 +264,7 @@ const Cart = () => {
           <button 
             className={`scan-btn ${isScanning ? 'scanning-active' : ''}`}
             onClick={isScanning ? stopScanning : startScanning}
+            disabled={productsLoading}
           >
             {isScanning ? (
               <>

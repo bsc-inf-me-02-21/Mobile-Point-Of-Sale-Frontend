@@ -14,14 +14,14 @@ export const ProductCategories = [
 
   const Products = [
   // Original products with Unsplash images
-  { id: "123456789", name: "Coca-Cola 500ml", price: 2.50, category: "Beverages", image: `${Coca}`},
-  { id: "6005165000890", name: "Special brew 330ml", price: 1.75, category: "Snacks", image: "https://source.unsplash.com/random/?potato,chips&sig=234567890" },
+  { id: "123456789", name: "Coca-Cola 500ml", price: 1000, category: "Beverages", image: `${Coca}`},
+  { id: "6005165000890", name: "Special brew 330ml", price: 3000, category: "Beverages", image: "https://source.unsplash.com/random/?potato,chips&sig=234567890" },
   { id: "345678901", name: "Whole Milk 1L", price: 3.25, category: "Dairy", image: "https://source.unsplash.com/random/?milk,bottle&sig=345678901" },
   { id: "456789012", name: "Mineral Water", price: 1.25, category: "Beverages", image: "https://source.unsplash.com/random/?mineral,water&sig=456789012" },
   { id: "567890123", name: "Chocolate Bar", price: 2.00, category: "Snacks", image: "https://source.unsplash.com/random/?chocolate,bar&sig=567890123" },
   { id: "678901234", name: "Bread Loaf", price: 1.50, category: "Bakery", image: "https://source.unsplash.com/random/?bread,loaf&sig=678901234" },
   { id: "789012345", name: "Apple Juice", price: 2.25, category: "Beverages", image: "https://source.unsplash.com/random/?apple,juice&sig=789012345" },
-  { id: "890123456", name: "Cookies Pack", price: 2.75, category: "Snacks", image: "https://source.unsplash.com/random/?cookies,pack&sig=890123456" },
+  { id: "6001087009911", name: "Dawn For Men 400ml", price: 10000.00, category: "Lotion", image: "https://source.unsplash.com/random/?cookies,pack&sig=890123456" },
   
   // Additional products (42 items) with Unsplash images
   { id: "901234567", name: "Orange Juice", price: 2.35, category: "Beverages", image: "https://source.unsplash.com/random/?orange,juice&sig=901234567" },
@@ -65,7 +65,7 @@ export const ProductCategories = [
   { id: "232232232", name: "Matcha Tea", price: 3.45, category: "Beverages", image: "https://source.unsplash.com/random/?matcha,tea&sig=232232232" },
   { id: "343343343", name: "Pistachios", price: 3.25, category: "Snacks", image: "https://source.unsplash.com/random/?pistachios,nuts&sig=343343343" },
   { id: "454454454", name: "Kefir", price: 3.95, category: "Dairy", image: "https://source.unsplash.com/random/?kefir,drink&sig=454454454" },
-  { id: "565565565", name: "Cookie Pack", price: 3.25, category: "Bakery", image: "https://source.unsplash.com/random/?cookies,pack&sig=565565565" },
+  { id: "6001887009911", name: "Cookie Pack", price: 3.25, category: "Bakery", image: "https://source.unsplash.com/random/?cookies,pack&sig=565565565" },
   { id: "676676676", name: "Seltzer Water", price: 1.45, category: "Beverages", image: "https://source.unsplash.com/random/?seltzer,water&sig=676676676" }
 ];
 
