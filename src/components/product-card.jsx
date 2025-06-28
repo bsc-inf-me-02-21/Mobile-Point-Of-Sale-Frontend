@@ -2,10 +2,11 @@ import { useState, useContext, useEffect } from "react";
 import { ProductsContext } from "../context/products-context.jsx";
 import { useCart } from "../context/cart-context.jsx";
 import { useNavigate } from 'react-router-dom';
-import { FaCartPlus } from 'react-icons/fa
-import { FaShoppingCart } from 'react-icons/fa'; 
 
-import "../styles/product-card.css";
+
+import { FaCartPlus, FaShoppingCart, FaSearch } from 'react-icons/fa';
+import { FaBox } from 'react-icons/fa';
+import "../styles/product-card.css"; 
 
 function ProductCard() {
   const { productsData } = useContext(ProductsContext);
@@ -42,10 +43,8 @@ function ProductCard() {
 
   return (
     <div className="pos-container">
-    
       {/* Sticky header */}
       <div className={`search-header ${isScrolled ? 'scrolled' : ''}`}>
-
         <div className="search-container">
           <input
             type="text"
@@ -54,15 +53,9 @@ function ProductCard() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
           />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            className="search-icon"
-          >
-            <path fill="currentColor" d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5q0-2.725 1.888-4.612T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3l-1.4 1.4ZM9.5 14q1.875 0 3.188-1.313T14 9.5q0-1.875-1.313-3.188T9.5 5Q7.625 5 6.312 6.313T5 9.5q0 1.875 1.313 3.188T9.5 14Z"/>
-          </svg>
+          <span className="search-icon-react">
+            <FaSearch size={20} />
+          </span>
 
           {searchQuery && (
             <button
@@ -101,13 +94,6 @@ function ProductCard() {
           filteredProducts.map((product) => (
             <div className="product-card" key={product.id}>
               <div className="product-image-container">
-                <div className="product-badge">
-                  <span className="category-badge">{product.category}</span>
-                  {product.quantity <= product.minStockLevel && (
-                    <span className="stock-badge">Low Stock</span>
-                  )}
-                </div>
-
                 <img
                   src={product.image}
                   alt={product.name}
@@ -119,12 +105,13 @@ function ProductCard() {
               <div className="product-details">
                 <h3 className="product-name">{product.name}</h3>
 
-                {/* Stock info */}
-                <div className="stock-info">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M17 3a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h10m0 2H7a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1m-1 4v2H8V7h8Z"/>
-                  </svg>
-                  <span>{product.quantity} in stock</span>
+                {/* New: Separate tags on the same line */}
+                <div className="tags-row">
+                  <span className="tag category-tag">{product.category}</span>
+                  <span className={`tag stock-tag ${product.quantity <= product.minStockLevel ? 'low-stock' : ''}`}>
+                    <FaBox />
+                    {product.quantity} in stock
+                  </span>
                 </div>
 
                 <div className="product-meta">
@@ -137,8 +124,7 @@ function ProductCard() {
                     onClick={() => addToCart(product)}
                     aria-label={`Add ${product.name} to cart`}
                   >
-
-                    <FaCartPlus size={20} color="white" />}
+                    <FaCartPlus size={20} color="white" />
                     Add
                   </button>
                 </div>
@@ -162,8 +148,7 @@ function ProductCard() {
         aria-label="View cart"
         onClick={handleCartClick}
       >
-        
-        <FaShoppingCart size={24} color="white" /> 
+        <FaShoppingCart size={24} color="white" />
         {cartItemsCount > 0 && (
           <span className="cart-count">{cartItemsCount}</span>
         )}
