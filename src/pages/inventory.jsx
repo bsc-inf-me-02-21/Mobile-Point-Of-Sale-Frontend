@@ -8,7 +8,21 @@ const categories = ['All', ...new Set(productsData.map(p => p.category))];
 
 const filteredProducts = productsData.filter(product => { const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) || product.category.toLowerCase().includes(searchTerm.toLowerCase()) || product.id.includes(searchTerm); const matchesCategory = activeCategory === 'All' || product.category === activeCategory; return matchesSearch && matchesCategory; });
 
-return ( <div className="inventory-container"> <div className="inventory-header"> <div className="header-content"> <div className="title-group"> <i className="fas fa-boxes header-icon"></i> <div> <h1 className="inventory-title">Inventory Management</h1> <p className="inventory-subtitle">Track and manage your product inventory</p> </div> </div> <div className="header-actions"> <button className="action-btn export"> <i className="fas fa-file-export"></i> Export </button> <button className="action-btn primary"> <i className="fas fa-plus"></i> Add Product </button> </div> </div> </div>
+return ( <div className="inventory-container">
+ <div className="inventory-header"> <div className="header-content">
+  <div className="title-group"> 
+  <i className="fas fa-boxes header-icon"></i> <div> 
+  <h1 className="inventory-title">Inventory Management</h1>
+  <p className="inventory-subtitle">Track and manage your product inventory</p> </div>
+  </div> 
+  <div className="header-actions">
+  <button className="action-btn export">
+  <i className="fas fa-file-export"></i> Export </button> 
+  <button className="action-btn primary"> <i className="fas fa-plus">
+     </i> Add Product </button> 
+    </div> 
+   </div>
+  </div>
 
 <div className="dashboard-stats">
     <div className="stat-card primary">
@@ -153,7 +167,7 @@ return ( <div className="inventory-container"> <div className="inventory-header"
           <div className="header-item">#</div>
           <div className="header-item">Product Info</div>
           <div className="header-item hide-mobile">Category</div>
-          <div className="header-item">Current Stock</div>
+          <div className="header-item">Stock Qty</div>
           <div className="header-item hide-mobile">Price</div>
           <div className="header-item hide-mobile">Status</div>
           <div className="header-item hide-mobile">Actions</div>
