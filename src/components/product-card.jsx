@@ -2,8 +2,6 @@ import { useState, useContext, useEffect } from "react";
 import { ProductsContext } from "../context/products-context.jsx";
 import { useCart } from "../context/cart-context.jsx";
 import { useNavigate } from 'react-router-dom';
-
-
 import { FaCartPlus, FaShoppingCart, FaSearch } from 'react-icons/fa';
 import { FaBox } from 'react-icons/fa';
 import "../styles/product-card.css"; 
@@ -105,7 +103,7 @@ function ProductCard() {
               <div className="product-details">
                 <h3 className="product-name">{product.name}</h3>
 
-                {/* New: Separate tags on the same line */}
+               
                 <div className="tags-row">
                   <span className="tag category-tag">{product.category}</span>
                   <span className={`tag stock-tag ${product.quantity <= product.minStockLevel ? 'low-stock' : ''}`}>
